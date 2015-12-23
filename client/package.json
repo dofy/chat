@@ -1,0 +1,18 @@
+{
+    "name": "chat-client",
+    "version": "0.0.1",
+    "description": "Chat Client",
+    "main": "chat-client.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "socket",
+        "chat"
+    ],
+    "author": "Seven Yu",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.12.2"
+    }
+}

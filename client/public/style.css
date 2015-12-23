@@ -1,0 +1,75 @@
+body, input {
+    margin: 0;
+    padding: 0;
+    font: 1.2em Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+ul, li {
+    clear: both;
+    margin: 5px;
+    padding: 1px;
+    list-style: none;
+}
+input {
+    padding: 7px;
+}
+#input-message {
+    width: 77%;
+}
+.ui-dialog {
+    background-color: #ccc;
+}
+.ui-dialog-titlebar {
+    display: none;
+}
+.input {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 65px;
+    background-color: #ccc;
+}
+.main {
+    height: 100%;
+    background-color: #efefef;
+}
+.users, .message {
+    overflow: auto;
+}
+.users {
+    float: left;
+    width: 330px;
+    height: 100%;
+    background-color: #e3e3e3;
+}
+.message {
+    line-height: 1.7em;
+    height: 100%;
+}
+.content {
+    padding: 10px;
+}
+.name {
+    color: #666;
+}
+.self {
+    text-decoration: underline;
+    font-weight: bold;
+}
+.time {
+    float: right;
+    color: #ccc;
+}
+.message-item {
+    font-size: 1.24em;
+    color: #666;
+}
+.message span {
+    padding: 5px 10px;
+}
+.log {
+    text-align: center;
+    color: #ccc;
+}
+.OMG {
+    height: 65px;
+}
