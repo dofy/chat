@@ -141,8 +141,7 @@
                 onNums++;
                 if (users[id].state !== 'self') {
                     console.log('.....', users[id]);
-                    userList.append('<li>' + (users[id].name ? fixHtml(users[id].name) :
-                                              '<em>[Unnamed]</em>') + '</li>');
+                    userList.append('<li>' + (users[id].name ? fixHtml(users[id].name) : '<em>[Unnamed]</em>') + '</li>');
                 }
             } else {
                 offNums++;
