@@ -30,8 +30,7 @@ io.on('connection', function(sock) {
     sock.on('name', function(data) {
         console.log('- name', data);
         for (var id in users) {
-            if (users[id].name === data && users[id].state ===
-                'online') {
+            if (users[id].name === data && users[id].state === 'online') {
                 sock.emit('err', 'Name is exists.');
                 return;
             }
