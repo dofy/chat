@@ -1,3 +1,3 @@
-### Socket Client
+### Socket Clients
 
-chat & game.
+chat & game (in public folder).
