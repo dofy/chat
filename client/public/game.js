@@ -5,7 +5,7 @@
     // socket system event
     sock.on('connect', function(data) {
         console.log('- connect');
-        mycolor = '#' + getHex(Math.floor(Math.random() * 65535));
+        mycolor = getHexColor(Math.floor(Math.random() * 0xffffff));
     });
     sock.on('disconnect', function(data) {
         console.log('- disconnect');
@@ -53,11 +53,11 @@
         m.append( '<div class="point" style="left:' + x + 'px;top:' + y +
             'px;background-color:' + color + '"></div>');
     }
-    function getHex(color) {
+    function getHexColor(color) {
         var result = color.toString(16);
         while(result.length < 6) {
             result = '0' + result;
         }
-        return result;
+        return '#' + result;
     }
 })(window, jQuery, io, config);
