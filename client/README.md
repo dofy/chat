@@ -1,1 +1,3 @@
-### Chat Client
+### Socket Client
+
+chat & game.
