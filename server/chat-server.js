@@ -43,7 +43,7 @@ io.on('connection', function(sock) {
         sock.emit('name', result);
         sock.broadcast.emit('join', result);
     });
-    // message
+    // message (text data for chat)
     sock.on('message', function(data) {
         console.log('[message]', data);
         var result = {
@@ -53,6 +53,17 @@ io.on('connection', function(sock) {
         };
         sock.emit('self', result);
         sock.broadcast.emit('message', result);
+    });
+    // data (json data for game)
+    sock.on('data', function(data) {
+        console.log('[data]', data);
+        var result = {
+            id: sock.id,
+            data: data,
+            time: new Date()
+        };
+        sock.emit('self', result);
+        sock.broadcast.emit('data', result);
     });
 });
 

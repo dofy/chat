@@ -1,0 +1,14 @@
+body {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+h2 {
+    font-size: 35px;
+}
+ul, li {
+    padding: 7px;
+    font-size: 28px;
+    list-style: none;
+}
+a {
+    color: #333;
+}

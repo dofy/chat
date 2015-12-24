@@ -1,0 +1,13 @@
+body, div {
+    margin: 0;
+    padding: 0;
+}
+.playground {
+    background-color: #333;
+    height: 100vh;
+}
+.point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+}

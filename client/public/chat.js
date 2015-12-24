@@ -1,7 +1,7 @@
 (function(win, $, io, conf, undef) {
     var sock = io.connect(config.server);
-
-    var myid, myname, users = {},
+    var myid, myname,
+        users = {},
         joinin = false;
     // socket system event
     sock.on('connect', function(data) {
@@ -11,7 +11,6 @@
         joinin = false;
         console.log('- disconnect');
     });
-
     // error
     sock.on('err', function(err) {
         $('#input-name').val(err).select();
@@ -76,10 +75,10 @@
         switch (evt.which) {
             case 13: // enter
                 if (msg !== '') {
-                sendMessage(msg);
-                this.value = '';
-            }
-            break;
+                    sendMessage(msg);
+                    this.value = '';
+                }
+                break;
             befault:
                 // nothing...
                 break;
@@ -101,17 +100,13 @@
     }
 
     function showMessage(data) {
-        $('#message-list').append('<li>' +
-                                  (
-                                      data.id === myid ? '<span class="name self">' :
-                                          '<span class="name">'
-        ) + fixHtml(users[data.id].name) + '</span>' +
-            '<span class="message-item">' + fixHtml(data.message) +
-            '</span>' +
-            '<span class="time">' + moment(data.time).format(
-                'HH:mm:ss') + '</span>' +
-                    '</li>');
-                $('.message')[0].scrollTop = $('.message')[0].scrollHeight;
+        $('#message-list').append(
+            '<li>' + ( data.id === myid ? '<span class="name self">' : '<span class="name">') +
+            fixHtml(users[data.id].name) + '</span>' +
+            '<span class="message-item">' + fixHtml(data.message) + '</span>' +
+            '<span class="time">' + moment(data.time).format( 'HH:mm:ss') + '</span>' + '</li>'
+        );
+        $('.message')[0].scrollTop = $('.message')[0].scrollHeight;
     }
 
     function showLog(type, data) {
@@ -126,7 +121,7 @@
     }
 
     function fixHtml(str) {
-        return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return str ? str.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
     }
 
     function refreshUserList(data) {
