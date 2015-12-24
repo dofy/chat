@@ -1,4 +1,4 @@
-## WebSocket serven and clients
+## WebSocket server and clients
 
 - server (socket server)
 - client
