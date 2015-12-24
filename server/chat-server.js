@@ -5,10 +5,10 @@ var server = require('http').createServer(),
 
 io.on('connection', function(sock) {
     // connected
-    console.log('connected', sock.id);
+    console.log('[connected]', sock.id);
     // disconnected
     sock.on('disconnect', function() {
-        console.log('disconnected', sock.id);
+        console.log('[disconnected]', sock.id);
         users[sock.id].state = 'offline';
         sock.broadcast.emit('exit', {
             id: sock.id,
@@ -16,7 +16,6 @@ io.on('connection', function(sock) {
             time: new Date()
         });
     });
-
 
     users[sock.id] = {
         name: null,
@@ -28,9 +27,9 @@ io.on('connection', function(sock) {
     });
     // set name
     sock.on('name', function(data) {
-        console.log('- name', data);
+        console.log('[name]', data);
         for (var id in users) {
-            if (users[id].name === data && users[id].state === 'online') {
+            if (users[id].name && users[id].name.toLowerCase() === data.toLowerCase() && users[id].state === 'online') {
                 sock.emit('err', 'Name is exists.');
                 return;
             }
@@ -46,8 +45,7 @@ io.on('connection', function(sock) {
     });
     // message
     sock.on('message', function(data) {
-        console.log('message');
-        console.log(data);
+        console.log('[message]', data);
         var result = {
             id: sock.id,
             message: data,
