@@ -1,13 +1,15 @@
-body, div {
+body {
     margin: 0;
     padding: 0;
-}
-.playground {
-    background-color: #333;
     height: 100vh;
+    background-color: #333;
 }
-.point {
+#playground {
+    background-color: #fff;
+    margin: auto auto;
     position: absolute;
-    width: 10px;
-    height: 10px;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    right: 5px;
 }

@@ -1,57 +1,65 @@
 (function(win, $, io, conf, undef) {
     var sock = io.connect(config.server);
-
-    var myid, mycolor, users = {};
+    var myColor, myWidth;
+    var box = $('#playground');
+    var boxDom = box.get(0);
+    var isDown = false;
+    var stage = boxDom.getContext('2d');
     // socket system event
     sock.on('connect', function(data) {
         console.log('- connect');
-        mycolor = getHexColor(Math.floor(Math.random() * 0xffffff));
+        myColor = getHexColor(Math.floor(Math.random() * 0xffffff));
+        myWidth = Math.round(Math.random() * 7 + 2);
     });
     sock.on('disconnect', function(data) {
         console.log('- disconnect');
     });
-    // myid event
-    sock.on('myid', function(data) {
-        console.log('- myid', data);
-    });
     // self event
     sock.on('self', function(data) {
-        console.log('- self', data);
+        //console.log('- self', data);
         showPoint(data.data);
     });
-    // message event
+    // data event
     sock.on('data', function(data) {
         console.log('- data', data);
         showPoint(data.data);
     });
-    var m = $('.playground');
-    var isDown = false;
-    m.on('mousedown', function(evt) {
+    // bind events
+    box.on('mousedown', function(evt) {
+        console.log(evt);
         isDown = true;
         sock.emit('data', {
-            color: mycolor,
-            point: [evt.clientX, evt.clientY]
+            begin: true,
+            color: myColor,
+            width: myWidth,
+            point: [evt.offsetX, evt.offsetY]
         });
     });
-    m.on('mouseup', function(evt) {
+    box.on('mouseup', function(evt) {
         isDown = false;
     })
-    m.on('mousemove', function(evt) {
+    box.on('mousemove', function(evt) {
         if(isDown) {
             sock.emit('data', {
-                color: mycolor,
-                point: [evt.clientX, evt.clientY]
+                color: myColor,
+                point: [evt.offsetX, evt.offsetY]
             });
         }
     })
     function showPoint(data) {
         var color = data.color,
+            width = data.width,
             x = data.point[0],
             y = data.point[1];
-        x = Math.floor(x / 10) * 10;
-        y = Math.floor(y / 10) * 10;
-        m.append( '<div class="point" style="left:' + x + 'px;top:' + y +
-            'px;background-color:' + color + '"></div>');
+        if(data.begin) {
+            stage.strokeStyle = color;
+            stage.lineWidth = width;
+            stage.beginPath();
+            stage.moveTo(x, y);
+        } else {
+            stage.lineTo(x, y);
+            stage.stroke();
+        }
     }
     function getHexColor(color) {
         var result = color.toString(16);
