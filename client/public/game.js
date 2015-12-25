@@ -1,10 +1,9 @@
 (function(win, $, io, conf, undef) {
     var sock = io.connect(config.server);
-    var myColor, myWidth;
+    var myid, myColor, myWidth, myData;
+    var dataStore = [];
     var box = $('#playground');
-    var boxDom = box.get(0);
-    var isDown = false;
-    var stage = boxDom.getContext('2d');
+    var stage = box.get(0).getContext('2d');
     // socket system event
     sock.on('connect', function(data) {
         console.log('- connect');
@@ -14,51 +13,74 @@
     sock.on('disconnect', function(data) {
         console.log('- disconnect');
     });
+    // myid event
+    sock.on('myid', function(data) {
+        console.log('- myid', data);
+        myid = data.id;
+    });
     // self event
     sock.on('self', function(data) {
         //console.log('- self', data);
-        showPoint(data.data);
+        showPoint(data.id, data.data);
     });
     // data event
     sock.on('data', function(data) {
         console.log('- data', data);
-        showPoint(data.data);
+        if(myData) {
+            dataStore.push(data);
+        } else {
+            showPoint(data.id, data.data);
+        }
     });
     // bind events
     box.on('mousedown', function(evt) {
-        console.log(evt);
-        isDown = true;
-        sock.emit('data', {
-            begin: true,
+        var x = evt.offsetX,
+            y = evt.offsetY;
+        myData = {
             color: myColor,
             width: myWidth,
-            point: [evt.offsetX, evt.offsetY]
-        });
+            points: [[x, y]]
+        };
+        // todo: draw
+        stage.strokeStyle = myColor;
+        stage.lineWidth = myWidth;
+        stage.beginPath();
+        stage.moveTo(x, y);
     });
     box.on('mouseup', function(evt) {
-        isDown = false;
-    })
-    box.on('mousemove', function(evt) {
-        if(isDown) {
-            sock.emit('data', {
-                color: myColor,
-                point: [evt.offsetX, evt.offsetY]
-            });
+        var userData;
+        sock.emit('data', myData);
+        myData = null;
+        while(userData = dataStore.pop()) {
+            showPoint(userData);
         }
     })
-    function showPoint(data) {
-        var color = data.color,
-            width = data.width,
-            x = data.point[0],
-            y = data.point[1];
-        if(data.begin) {
-            stage.strokeStyle = color;
-            stage.lineWidth = width;
-            stage.beginPath();
-            stage.moveTo(x, y);
-        } else {
+    box.on('mousemove', function(evt) {
+        var x, y;
+        if(myData) {
+            x = evt.offsetX;
+            y = evt.offsetY;
+            myData.points.push([x, y]);
             stage.lineTo(x, y);
             stage.stroke();
+        }
+    })
+    function showPoint(id, data) {
+        var color = data.color,
+            width = data.width,
+            points = data.points;
+        if(id === myid)
+            return;
+        for(var i = 0, l = points.length; i < l; i++) {
+            if(i === 0) {
+                stage.strokeStyle = color;
+                stage.lineWidth = width;
+                stage.beginPath();
+                stage.moveTo(points[i][0], points[i][1]);
+            } else {
+                stage.lineTo(points[i][0], points[i][1]);
+                stage.stroke();
+            }
         }
     }
     function getHexColor(color) {

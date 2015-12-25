@@ -5,8 +5,8 @@ body {
     background-color: #333;
 }
 #playground {
+    margin: auto;
     background-color: #fff;
-    margin: auto auto;
     position: absolute;
     top: 5px;
     left: 5px;
