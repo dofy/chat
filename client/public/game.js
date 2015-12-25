@@ -18,18 +18,13 @@
         console.log('- myid', data);
         myid = data.id;
     });
-    // self event
-    sock.on('self', function(data) {
-        //console.log('- self', data);
-        showPoint(data.id, data.data);
-    });
     // data event
     sock.on('data', function(data) {
         console.log('- data', data);
         if(myData) {
             dataStore.push(data);
         } else {
-            showPoint(data.id, data.data);
+            showPoint(data.data);
         }
     });
     // bind events
@@ -52,7 +47,7 @@
         sock.emit('data', myData);
         myData = null;
         while(userData = dataStore.pop()) {
-            showPoint(userData);
+            showPoint(userData.data);
         }
     })
     box.on('mousemove', function(evt) {
@@ -65,12 +60,10 @@
             stage.stroke();
         }
     })
-    function showPoint(id, data) {
+    function showPoint(data) {
         var color = data.color,
             width = data.width,
             points = data.points;
-        if(id === myid)
-            return;
         for(var i = 0, l = points.length; i < l; i++) {
             if(i === 0) {
                 stage.strokeStyle = color;
