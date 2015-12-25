@@ -1,4 +1,5 @@
 (function(win, $, io, conf, undef) {
+    var CHANNEL = 'demo.chat';
     var sock = io.connect(config.server);
     var myid, myname,
         users = {},
@@ -17,8 +18,7 @@
     });
     // self id
     sock.on('myid', function(data) {
-        console.log('- myid');
-        console.log(data);
+        console.log('- myid', data);
         myid = data.id;
         // show set name dialog
         $('#dialog-name').dialog({
@@ -31,8 +31,9 @@
     });
     // set name
     sock.on('name', function(data) {
-        console.log('- name');
-        console.log(data);
+        console.log('- name', data);
+        if(data.channel !== CHANNEL)
+            return;
         joinin = true;
         refreshUserList(data);
         myname = fixHtml(users[myid].name);
@@ -43,28 +44,31 @@
     });
     // other guy join in
     sock.on('join', function(data) {
-        console.log('- join');
-        console.log(data);
+        console.log('- join', data);
+        if(data.channel !== CHANNEL)
+            return;
         joinin && refreshUserList(data);
         showLog('joined', users[data.id]);
     });
     // other guy exit
     sock.on('exit', function(data) {
-        console.log('- exit');
-        console.log(data);
+        console.log('- exit', data);
         joinin && refreshUserList(data);
         showLog('left', users[data.id]);
     });
 
     // self message
     sock.on('self', function(data) {
-        console.log('- self');
-        console.log(data);
+        console.log('- self', data);
+        if(data.channel !== CHANNEL)
+            return;
         joinin && showMessage(data);
     });
     // somebody's message
     sock.on('message', function(data) {
-        console.log('- message: %s', data);
+        console.log('- message', data);
+        if(data.channel !== CHANNEL)
+            return;
         joinin && showMessage(data);
     });
 
@@ -90,13 +94,13 @@
         if (evt.which === 13) {
             var name = $(this).val().trim();
             if (name !== '') {
-                sock.emit('name', name)
+                sock.emit('name', name, CHANNEL);
             }
         }
     });
 
     function sendMessage(msg) {
-        sock.emit('message', msg);
+        sock.emit('message', msg, CHANNEL);
     }
 
     function showMessage(data) {
@@ -110,6 +114,8 @@
     }
 
     function showLog(type, data) {
+        if(!data)
+            return;
         var log = '';
         if (type === '-') {
             log = data;
@@ -126,8 +132,7 @@
 
     function refreshUserList(data) {
         var userList = $('#user-list'),
-            onNums = 0,
-            offNums = 0;
+            onNums = 0;
         users = data.users;
         users[myid].state = 'self';
         userList.html('');
@@ -138,12 +143,9 @@
                     console.log('.....', users[id]);
                     userList.append('<li>' + (users[id].name ? fixHtml(users[id].name) : '<em>[Unnamed]</em>') + '</li>');
                 }
-            } else {
-                offNums++;
             }
         }
         userList.prepend('<li><span class="self">' + fixHtml(users[myid].name) + '</span></li>');
-        // userList.prepend('<li><em>- Offline (' + offNums + ')</em></li>');
         userList.prepend('<li><em>- Online (' + onNums + ')</em></li>');
     }
 })(window, jQuery, io, config);

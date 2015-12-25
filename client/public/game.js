@@ -1,6 +1,7 @@
 (function(win, $, io, conf, undef) {
+    var CHANNEL = 'demo.game';
     var sock = io.connect(config.server);
-    var myid, myColor, myWidth, myData;
+    var myColor, myWidth, myData;
     var dataStore = [];
     var box = $('#playground');
     var stage = box.get(0).getContext('2d');
@@ -13,20 +14,24 @@
     sock.on('disconnect', function(data) {
         console.log('- disconnect');
     });
-    // myid event
-    sock.on('myid', function(data) {
-        console.log('- myid', data);
-        myid = data.id;
-    });
     // data event
-    sock.on('data', function(data) {
+    sock.on('message', function(data) {
         console.log('- data', data);
+        if(data.channel !== CHANNEL)
+            return;
         if(myData) {
             dataStore.push(data);
         } else {
-            showPoint(data.data);
+            showPoint(data.message);
         }
     });
+    /*
+     * you can use other events like:
+     * myid: get your id
+     * self: you sent data
+     * exit: someone exited
+     * message: some text message
+     */
     // bind events
     box.on('mousedown', function(evt) {
         var x = evt.offsetX,
@@ -44,10 +49,10 @@
     });
     box.on('mouseup', function(evt) {
         var userData;
-        sock.emit('data', myData);
+        sock.emit('message', myData, CHANNEL);
         myData = null;
         while(userData = dataStore.pop()) {
-            showPoint(userData.data);
+            showPoint(userData.message);
         }
     })
     box.on('mousemove', function(evt) {
