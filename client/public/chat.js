@@ -1,6 +1,6 @@
 (function(win, $, io, conf, undef) {
     var CHANNEL = 'demo.chat';
-    var sock = io.connect(config.server);
+    var sock = io.connect(`${config.server}`);
     var myid, myname,
         users = {},
         joinin = false;

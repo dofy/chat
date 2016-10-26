@@ -1,5 +1,4 @@
-var server = require('http').createServer(),
-    io = require('socket.io')(server),
+var io = require('socket.io')(),
     config = require('./lib/config'),
     defaultChannel = 'DEFAULT',
     users = {};
@@ -84,6 +83,5 @@ io.on('connection', function(sock) {
     */
 });
 
-server.listen(config.port, function() {
-    console.log('Server listening at %d ...', config.port);
-});
+io.attach(config.port);
+console.log('Server listening at %d ...', config.port);

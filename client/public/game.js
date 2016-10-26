@@ -1,6 +1,6 @@
 (function(win, $, io, conf, undef) {
     var CHANNEL = 'demo.game';
-    var sock = io.connect(config.server);
+    var sock = io.connect(`${config.server}`);
     var myColor, myWidth, myData;
     var dataStore = [];
     var box = $('#playground');
